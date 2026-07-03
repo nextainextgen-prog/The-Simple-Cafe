@@ -6,6 +6,30 @@
 
 ---
 
+## 3 ก.ค. 2026 (2) — Scaffold เว็บจริง + หน้าแรกเสร็จ
+
+**เคาะแล้ว:**
+- เริ่มโค้ดเว็บจริง (ข้าม prototype — prototype เก็บเป็น reference)
+- ฟอนต์ = Olimpico (heading) + Arrière Garde (accent) + Longhand LP Bold (ลายมือ) + Noto Sans Thai (ไทย/body) — "ใช้ 4 ตัวนี้เท่านั้น"
+  - Noto Sans Thai ฟรีแล้ว, อีก 3 ตัวรอไฟล์ .woff2 วางใน `public/fonts/` (ดู README ในนั้น) ระหว่างรอ fallback = Noto
+
+**ทำไปแล้ว:**
+- Scaffold Next.js 16 + React 19 + Tailwind v4 + TS + lucide-react + motion
+- Design system สีแบรนด์เป็น token: cream/surface/soft/brand/brand-deep/ink/ink-soft/gold/gold-bright/line
+  - หมายเหตุ: ชื่อ token `base` ชนกับ `text-base` (font-size) ของ Tailwind → ใช้ชื่อ `cream` แทน
+- มาสคอต 27 ไฟล์ → `public/mascot` + `public/icons` (resize 5000→1400px), ตั้งชื่อสื่อความหมายตาม MASCOT_MAP
+- Components: SiteHeader (sticky + mobile menu + LINE), SiteFooter (+floating LINE มือถือ), Button (pill hover-invert), Badge (typewriter stamp), Reveal (motion — มีโหมด `now` สำหรับ above-fold), Art (next/image wrapper)
+- lib/site.ts (nav/brand/stats), lib/products.ts (typed เผื่อต่อ DB)
+- **หน้าแรกเสร็จครบ 8 section**: hero / trust strip / what-we-do / featured / why / social proof / catering preview / CTA band
+- รันจริง localhost:3000 → สวย สีถูก มาสคอตขึ้นครบ ตัวอักษรครีมบนพื้นเขียวถูกต้อง
+
+**ค้าง / ต่อไป:**
+- หน้า products / catering / wholesale / about / contact (nav ลิงก์ไปแล้ว รอทำจริง)
+- ไฟล์ฟอนต์ 3 ตัว (Olimpico / Arrière Garde / Longhand LP) จากพี่โด้
+- ข้อมูลจริง + รูปถ่ายสินค้า + contact/LINE จริง จากลูกค้า
+
+---
+
 ## 3 ก.ค. 2026 — ได้สีแบรนด์จริง + reference เว็บ + เริ่มวางแผนดีไซน์
 
 ### สีแบรนด์จริง (The Simple — จากพี่โด้)

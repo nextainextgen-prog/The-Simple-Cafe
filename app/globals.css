@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* =========================================================
+   Brand fonts — วางไฟล์ .woff2 ลงใน /public/fonts/ (ดู README)
+   ถ้ายังไม่มีไฟล์ ระบบจะ fallback เป็น Noto Sans Thai อัตโนมัติ
+   ========================================================= */
+@font-face {
+  font-family: "Olimpico";
+  src: url("/fonts/Olimpico.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Arriere Garde";
+  src: url("/fonts/ArriereGarde.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Longhand LP";
+  src: url("/fonts/LonghandLP-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  /* ---- Brand palette (The Simple) ---- */
+  --color-cream: #fffae3;         /* Magnolia — พื้นเว็บ */
+  --color-surface: #fffcf0;      /* card / surface */
+  --color-soft: #f3ded7;         /* blush — section สลับ */
+  --color-brand: #737c49;        /* Verdant Views — primary */
+  --color-brand-deep: #44553c;   /* Green Tone — ปุ่มหลัก/เข้ม */
+  --color-ink: #2e3f26;          /* ตัวอักษรหลัก */
+  --color-ink-soft: #5b4528;     /* ตัวอักษรรอง */
+  --color-gold: #d0c077;         /* Tropical Moss — accent */
+  --color-gold-bright: #eacd71;  /* ทองสด — badge เด่น */
+  --color-line: #e4d4a6;         /* เส้น/ขอบอุ่น */
+
+  /* ---- Fonts (Noto Sans Thai เป็น fallback ทุกตัว) ---- */
+  --font-display: "Olimpico", var(--font-noto-thai), ui-sans-serif, system-ui, sans-serif;
+  --font-accent: "Arriere Garde", var(--font-noto-thai), ui-sans-serif, sans-serif;
+  --font-script: "Longhand LP", var(--font-noto-thai), cursive;
+  --font-body: var(--font-noto-thai), "Olimpico", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* หัวข้อใช้ฟอนต์ display + letter-spacing แน่นแบบพรีเมียม */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* selection สีแบรนด์ */
+::selection {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+
+@layer utilities {
+  /* Typewriter badge เอียง -3deg แบบ Levain */
+  .badge-stamp {
+    font-family: var(--font-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transform: rotate(-3deg);
+  }
+  /* เส้น underline ทอง */
+  .u-gold {
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 4px;
+  }
 }

@@ -32,6 +32,7 @@
 - ข้อมูลจริง + รูปถ่ายสินค้า/ร้าน/จัดเบรก + contact/LINE จริง → เติมแทน placeholder
 - ปลายทางฟอร์ม (email/LINE/Sheet) ตอนพร้อมใช้จริง
 - ยังไม่ deploy (รอพี่โด้สั่ง)
+- **Git remote: https://github.com/nextainextgen-prog/The-Simple-Cafe.git** (ยังไม่ได้ set remote / push — รอพี่โด้สั่ง)
 
 ---
 

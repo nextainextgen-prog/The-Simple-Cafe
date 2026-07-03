@@ -70,7 +70,28 @@ h1, h2, h3, h4 {
   color: var(--color-ink);
 }
 
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none !important;
+  }
+}
+
 @layer utilities {
+  /* ข้อความเลื่อนวน (marquee) สำหรับแถบประกาศ */
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+    will-change: transform;
+  }
+
   /* Typewriter badge เอียง -3deg แบบ Levain */
   .badge-stamp {
     font-family: var(--font-accent);

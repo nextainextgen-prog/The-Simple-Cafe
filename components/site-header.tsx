@@ -7,14 +7,32 @@ import { Menu, X } from "lucide-react";
 import { NAV, LINE_URL, BRAND } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
+const ANNOUNCE = [
+  "ส่งขอนแก่นทุกวัน",
+  "รับผลิต & จัดเบรกครบวงจร",
+  "อบสดใหม่ทุกวัน ไม่ใส่สารกันเสีย",
+  "สั่งล่วงหน้าได้ ส่งทั่วประเทศ",
+];
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-cream/85 backdrop-blur-md">
-      {/* แถบประกาศ */}
-      <div className="bg-brand-deep text-cream text-center text-xs sm:text-sm py-1.5 px-4">
-        ส่งขอนแก่นทุกวัน · รับผลิต &amp; จัดเบรกครบวงจร · สั่งล่วงหน้าได้
+      {/* แถบประกาศ — ข้อความเลื่อนวน (marquee) */}
+      <div className="bg-brand-deep text-cream text-xs sm:text-sm py-1.5 overflow-hidden">
+        <div className="flex w-max animate-marquee">
+          {[0, 1].map((group) => (
+            <div key={group} className="flex shrink-0" aria-hidden={group === 1}>
+              {ANNOUNCE.map((t, i) => (
+                <span key={i} className="flex items-center">
+                  <span className="px-6">{t}</span>
+                  <span className="opacity-40">•</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 h-16">

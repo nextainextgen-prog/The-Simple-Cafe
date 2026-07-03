@@ -23,10 +23,15 @@
 - **หน้าแรกเสร็จครบ 8 section**: hero / trust strip / what-we-do / featured / why / social proof / catering preview / CTA band
 - รันจริง localhost:3000 → สวย สีถูก มาสคอตขึ้นครบ ตัวอักษรครีมบนพื้นเขียวถูกต้อง
 
-**ค้าง / ต่อไป:**
-- หน้า products / catering / wholesale / about / contact (nav ลิงก์ไปแล้ว รอทำจริง)
-- ไฟล์ฟอนต์ 3 ตัว (Olimpico / Arrière Garde / Longhand LP) จากพี่โด้
-- ข้อมูลจริง + รูปถ่ายสินค้า + contact/LINE จริง จากลูกค้า
+**อัปเดต — ครบทุกหน้าแล้ว:** products / catering (แพ็กเกจ+เมนู+accordion+CTA 3 ทาง) / wholesale (who-we-serve+catalog ไม่โชว์ราคา+OEM steps+ฟอร์มขอใบเสนอราคา) / about (story+process+standards) / contact (info+ฟอร์ม+map) / 404 (มาสคอต)
+- Components เพิ่ม: PageHero, ImagePlaceholder, Accordion, QuoteForm, ContactForm, ProductGrid (filter)
+- **build production ผ่าน + TypeScript ผ่าน + ทุกหน้า static prerender (9 หน้า)** กดได้ทุกหน้า
+
+**ค้าง / ต่อไป (รอลูกค้า):**
+- ไฟล์ฟอนต์ 3 ตัว (Olimpico / Arrière Garde / Longhand LP) → วางใน public/fonts/
+- ข้อมูลจริง + รูปถ่ายสินค้า/ร้าน/จัดเบรก + contact/LINE จริง → เติมแทน placeholder
+- ปลายทางฟอร์ม (email/LINE/Sheet) ตอนพร้อมใช้จริง
+- ยังไม่ deploy (รอพี่โด้สั่ง)
 
 ---
 

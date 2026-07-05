@@ -11,7 +11,8 @@ export const BRAND = {
   hours: "ทุกวัน 08:00 – 18:00 น.",
 } as const;
 
-export const LINE_URL = "https://line.me/R/ti/p/@simplecafe";
+export const LINE_URL =
+  "https://page.line.me/thesimplecafe.kk?openQrModal=true";
 
 export const NAV = [
   { label: "หน้าแรก", href: "/" },

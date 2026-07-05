@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Thai } from "next/font/google";
+import { Noto_Sans_Thai, Cormorant, Caveat } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -8,6 +8,21 @@ const notoThai = Noto_Sans_Thai({
   variable: "--font-noto-thai",
   subsets: ["thai", "latin"],
   weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+// ฟอนต์โลโก้แบรนด์ THE SIMPLE (serif elegant) + cafe & bakery (ลายมือ)
+const cormorant = Cormorant({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["600", "700"],
   display: "swap",
 });
 
@@ -42,7 +57,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="th" className={`${notoThai.variable} h-full antialiased`}>
+    <html
+      lang="th"
+      className={`${notoThai.variable} ${cormorant.variable} ${caveat.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col bg-cream text-ink">
         <SiteHeader />
         <main className="flex-1">{children}</main>

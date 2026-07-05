@@ -39,8 +39,11 @@
   /* ---- Fonts (Noto Sans Thai เป็น fallback ทุกตัว) ---- */
   --font-display: "Olimpico", var(--font-noto-thai), ui-sans-serif, system-ui, sans-serif;
   --font-accent: "Arriere Garde", var(--font-noto-thai), ui-sans-serif, sans-serif;
-  --font-script: "Longhand LP", var(--font-noto-thai), cursive;
+  --font-script: "Longhand LP", var(--font-caveat), var(--font-noto-thai), cursive;
   --font-body: var(--font-noto-thai), "Olimpico", ui-sans-serif, system-ui, sans-serif;
+  /* โลโก้แบรนด์: serif = Cormorant, hand = Caveat (แทน Longhand LP ระหว่างรอไฟล์) */
+  --font-serif: var(--font-cormorant), var(--font-noto-thai), Georgia, serif;
+  --font-hand: var(--font-caveat), "Longhand LP", cursive;
 
   --radius-card: 10px;
 }
@@ -88,7 +91,7 @@ h1, h2, h3, h4 {
 @layer utilities {
   /* ข้อความเลื่อนวน (marquee) สำหรับแถบประกาศ */
   .animate-marquee {
-    animation: marquee 30s linear infinite;
+    animation: marquee 48s linear infinite;
     will-change: transform;
   }
 

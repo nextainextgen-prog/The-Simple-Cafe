@@ -5,7 +5,7 @@ type Tone = "gold" | "blush" | "green";
 const tones: Record<Tone, string> = {
   gold: "bg-gold-bright text-ink",
   blush: "bg-soft text-ink",
-  green: "bg-brand-deep text-base",
+  green: "bg-brand-deep text-cream",
 };
 
 // Typewriter sticker badge เอียง -3deg แบบ Levain

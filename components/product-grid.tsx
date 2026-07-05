@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Art } from "@/components/ui/art";
+import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES, type Category } from "@/lib/products";
@@ -55,7 +55,7 @@ export function ProductGrid() {
                 )}
                 {p.grade === "พรีเมียม" && <Badge tone="green">พรีเมียม</Badge>}
               </span>
-              <Art src={p.icon} className="mx-auto h-24 w-24 sm:h-28 sm:w-28" sizes="112px" />
+              <ImagePlaceholder label="ภาพสินค้า · 1:1" className="aspect-square w-full" />
             </div>
             <h3 className="mt-3 text-center font-medium text-ink text-sm sm:text-base">
               {p.name}

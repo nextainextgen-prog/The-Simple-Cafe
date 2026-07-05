@@ -13,6 +13,7 @@ import { Reveal } from "@/components/reveal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Art } from "@/components/ui/art";
+import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { FEATURED } from "@/lib/products";
 import { STATS, LINE_URL } from "@/lib/site";
 
@@ -35,7 +36,14 @@ export default function HomePage() {
     <>
       {/* ============ HERO ============ */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-12 pb-16 grid gap-8 lg:grid-cols-2 lg:items-center">
+        {/* มาสคอตตกแต่งมุมล่างซ้าย (ไม่ใช่ภาพหลัก) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-6 left-2 z-0 hidden lg:block h-40 w-36 -rotate-6 opacity-90"
+        >
+          <Art src="/mascot/serving.png" alt="" className="h-full w-full" sizes="144px" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 pt-12 pb-16 grid gap-8 lg:grid-cols-2 lg:items-center">
           <Reveal now>
             <div>
               <Badge tone="gold">อบสดใหม่ทุกวัน</Badge>
@@ -61,14 +69,11 @@ export default function HomePage() {
           </Reveal>
 
           <Reveal now delay={0.15}>
-            <div className="relative flex justify-center">
+            <div className="relative">
               <div className="absolute inset-0 -z-10 m-auto h-72 w-72 sm:h-96 sm:w-96 rounded-full bg-soft blur-2xl opacity-70" />
-              <Art
-                src="/mascot/serving.png"
-                alt="มาสคอต Simple Cafe ถือถาดครัวซองต์อบสด"
-                className="h-80 w-72 sm:h-[26rem] sm:w-96"
-                sizes="(max-width: 768px) 80vw, 384px"
-                priority
+              <ImagePlaceholder
+                label="ภาพเบเกอรี่ / บรรยากาศร้าน · 4:5"
+                className="aspect-[4/5] w-full max-w-sm mx-auto"
               />
             </div>
           </Reveal>
@@ -145,7 +150,7 @@ export default function HomePage() {
                         </Badge>
                       </span>
                     )}
-                    <Art src={p.icon} className="mx-auto h-24 w-24 sm:h-28 sm:w-28" sizes="112px" />
+                    <ImagePlaceholder label="ภาพสินค้า · 1:1" className="aspect-square w-full" />
                   </div>
                   <h3 className="mt-3 text-center font-medium text-ink text-sm sm:text-base">
                     {p.name}

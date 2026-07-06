@@ -61,7 +61,7 @@ export function ProductGrid() {
               {p.name}
             </h3>
             <p className="mt-1 text-center font-accent text-brand font-semibold">
-              ฿{p.price}
+              {p.price != null ? `฿${p.price}` : "สอบถามราคา"}
             </p>
           </div>
         ))}

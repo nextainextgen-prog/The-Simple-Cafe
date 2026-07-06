@@ -3,6 +3,7 @@ import { Coffee, UtensilsCrossed, Building2, PartyPopper } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { Art } from "@/components/ui/art";
+import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { QuoteForm } from "@/components/quote-form";
 import { PRODUCTS } from "@/lib/products";
 import { STATS } from "@/lib/site";
@@ -86,7 +87,7 @@ export default function WholesalePage() {
           {PRODUCTS.map((p, i) => (
             <Reveal key={p.id} delay={i * 0.05}>
               <div className="rounded-[10px] border border-line bg-surface p-5 text-center">
-                <Art src={p.icon} className="mx-auto h-24 w-24" sizes="96px" />
+                <ImagePlaceholder label="ภาพสินค้า · 1:1" className="aspect-square w-full" />
                 <h3 className="mt-3 font-medium text-ink text-sm sm:text-base">{p.name}</h3>
                 <a href="#quote" className="mt-1 inline-block text-sm text-brand hover:underline">
                   ขอราคาส่ง

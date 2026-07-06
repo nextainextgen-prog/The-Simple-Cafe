@@ -34,7 +34,16 @@ const PACKAGES = [
   },
 ];
 
-const MENU = ["ครัวซองต์", "ขนมปัง", "เค้ก", "คุกกี้", "โดนัท", "เบเกอรี่อื่นๆ"];
+const MENU_GROUPS = [
+  {
+    title: "เบเกอรี่",
+    items: ["ครัวซองต์", "ขนมปัง", "เค้ก", "คัพเค้ก", "คุกกี้", "โดนัท"],
+  },
+  {
+    title: "เครื่องดื่ม",
+    items: ["กาแฟ", "ชา / มัทฉะ", "โกโก้", "น้ำผลไม้", "สมูทตี้", "น้ำเปล่า / โซดา"],
+  },
+];
 
 const CONDITIONS = [
   { q: "ขั้นต่ำในการสั่ง", a: "รับจัดเบรกขั้นต่ำ 20 ท่านขึ้นไป สำหรับงานเล็กสามารถสอบถามเพิ่มเติมได้" },
@@ -123,18 +132,25 @@ export default function CateringPage() {
         <Reveal>
           <BreadDecor className="mb-5" />
           <h2 className="text-center text-3xl sm:text-4xl font-semibold text-ink">ตัวอย่างเมนู</h2>
-          <p className="mt-3 text-center text-ink-soft">เลือกผสมได้ตามชอบ</p>
+          <p className="mt-3 text-center text-ink-soft">เลือกผสมได้ตามชอบ ทั้งเบเกอรี่และเครื่องดื่ม</p>
         </Reveal>
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {MENU.map((label, i) => (
-            <Reveal key={label} delay={i * 0.05}>
-              <div className="rounded-[10px] border border-line bg-surface p-3">
-                <ImagePlaceholder label="ภาพเมนู · 1:1" className="aspect-square w-full" />
-                <p className="mt-2 text-center text-sm text-ink">{label}</p>
-              </div>
+        {MENU_GROUPS.map((group) => (
+          <div key={group.title} className="mt-12 first:mt-10">
+            <Reveal>
+              <h3 className="text-lg sm:text-xl font-semibold text-ink">{group.title}</h3>
             </Reveal>
-          ))}
-        </div>
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {group.items.map((label, i) => (
+                <Reveal key={label} delay={i * 0.04}>
+                  <div className="rounded-[10px] border border-line bg-surface p-3">
+                    <ImagePlaceholder label="ภาพเมนู · 1:1" className="aspect-square w-full" />
+                    <p className="mt-2 text-center text-sm text-ink">{label}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* conditions */}

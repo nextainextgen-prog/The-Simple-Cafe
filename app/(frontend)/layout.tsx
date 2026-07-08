@@ -3,6 +3,7 @@ import { Noto_Sans_Thai, Cormorant, Caveat } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { getSiteData } from "@/lib/cms";
 
 const notoThai = Noto_Sans_Thai({
   variable: "--font-noto-thai",
@@ -53,18 +54,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const site = await getSiteData();
   return (
     <html
       lang="th"
       className={`${notoThai.variable} ${cormorant.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-ink">
-        <SiteHeader />
+        <SiteHeader nav={site.nav} lineUrl={site.lineUrl} />
         <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <SiteFooter nav={site.nav} brand={site.brand} lineUrl={site.lineUrl} />
       </body>
     </html>
   );

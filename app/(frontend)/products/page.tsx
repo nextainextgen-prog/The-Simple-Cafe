@@ -3,13 +3,18 @@ import { PageHero } from "@/components/page-hero";
 import { ProductGrid } from "@/components/product-grid";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/reveal";
+import { getProducts, getCategories } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "สินค้า",
   description: "แคตตาล็อกเบเกอรี่ Simple Cafe — เค้ก ขนมปัง ครัวซองต์ ซาวโดว์ คุกกี้ อบสดใหม่ทุกวัน",
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const [products, categories] = await Promise.all([
+    getProducts(),
+    getCategories(),
+  ]);
   return (
     <>
       <PageHero
@@ -19,7 +24,7 @@ export default function ProductsPage() {
       />
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-14">
-        <ProductGrid />
+        <ProductGrid products={products} categories={categories} />
 
         <Reveal className="mt-16">
           <div className="rounded-[10px] bg-soft p-8 sm:p-10 text-center">

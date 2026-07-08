@@ -4,19 +4,27 @@ import { useState } from "react";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { PRODUCTS, CATEGORIES, type Category } from "@/lib/products";
+import type { CmsProduct, CmsCategory } from "@/lib/cms";
 
-type Filter = Category | "all";
+type Filter = string;
 
-export function ProductGrid() {
+export function ProductGrid({
+  products,
+  categories,
+}: {
+  products: CmsProduct[];
+  categories: CmsCategory[];
+}) {
   const [active, setActive] = useState<Filter>("all");
 
   const filtered =
-    active === "all" ? PRODUCTS : PRODUCTS.filter((p) => p.category === active);
+    active === "all"
+      ? products
+      : products.filter((p) => p.category === active);
 
   const pills: { key: Filter; label: string }[] = [
     { key: "all", label: "ทั้งหมด" },
-    ...CATEGORIES.map((c) => ({ key: c.key as Filter, label: c.label })),
+    ...categories.map((c) => ({ key: c.key, label: c.label })),
   ];
 
   return (

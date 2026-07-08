@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { NAV, LINE_URL } from "@/lib/site";
 import { BrandLockup } from "@/components/brand-lockup";
 import { cn } from "@/lib/utils";
+
+type NavItem = { label: string; href: string };
 
 const ANNOUNCE = [
   "ส่งขอนแก่นทุกวัน",
@@ -16,7 +17,13 @@ const ANNOUNCE = [
 // ซ้ำหลายรอบให้ track กว้างเกินจอ → เลื่อนต่อเนื่องไม่มีช่องว่าง
 const GROUP = [...ANNOUNCE, ...ANNOUNCE, ...ANNOUNCE];
 
-export function SiteHeader() {
+export function SiteHeader({
+  nav,
+  lineUrl,
+}: {
+  nav: NavItem[];
+  lineUrl: string;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -44,7 +51,7 @@ export function SiteHeader() {
 
         {/* กลาง: เมนู (desktop) */}
         <nav className="hidden lg:flex items-center gap-6">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -58,7 +65,7 @@ export function SiteHeader() {
         {/* ขวา: ปุ่ม สั่งซื้อเลย + ติดต่อ (desktop) */}
         <div className="hidden lg:flex items-center gap-2.5 shrink-0">
           <a
-            href={LINE_URL}
+            href={lineUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full bg-brand-deep px-5 py-2.5 text-sm font-medium text-cream transition-colors hover:bg-brand"
@@ -91,7 +98,7 @@ export function SiteHeader() {
         )}
       >
         <nav className="flex flex-col gap-1 px-4 py-3">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -103,7 +110,7 @@ export function SiteHeader() {
           ))}
           <div className="mt-2 flex gap-2.5 px-1">
             <a
-              href={LINE_URL}
+              href={lineUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 text-center rounded-full bg-brand-deep px-4 py-2.5 text-sm font-medium text-cream"

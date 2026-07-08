@@ -8,7 +8,7 @@ import { Art } from "@/components/ui/art";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { BreadDecor } from "@/components/ui/bread-decor";
 import { Accordion } from "@/components/ui/accordion";
-import { LINE_URL } from "@/lib/site";
+import { getSiteData } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "จัดเบรก",
@@ -51,7 +51,8 @@ const CONDITIONS = [
   { q: "พื้นที่จัดส่ง", a: "ขอนแก่นส่งถึงงานทุกวัน ต่างจังหวัดจัดส่งได้ทั่วประเทศ (มีค่าจัดส่งตามระยะทาง)" },
 ];
 
-export default function CateringPage() {
+export default async function CateringPage() {
+  const { lineUrl: LINE_URL } = await getSiteData();
   return (
     <>
       <PageHero

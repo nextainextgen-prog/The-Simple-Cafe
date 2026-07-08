@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 const nextConfig: NextConfig = {
   // แก้ warning: มี lockfile หลายที่ → ล็อก root ให้เป็นโฟลเดอร์โปรเจกต์นี้
@@ -7,4 +8,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withPayload(nextConfig);

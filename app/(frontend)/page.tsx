@@ -14,8 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Art } from "@/components/ui/art";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
-import { FEATURED } from "@/lib/products";
-import { STATS, LINE_URL } from "@/lib/site";
+import { getFeatured, getSiteData } from "@/lib/cms";
 
 const WHAT_WE_DO = [
   { title: "ผลิตเบเกอรี่", desc: "อบสดใหม่ทุกวัน คัดวัตถุดิบพรีเมียม", art: "/mascot/outline-mixing.png" },
@@ -31,7 +30,9 @@ const WHY = [
   "ลูกค้าองค์กรไว้วางใจกว่า 60 ราย",
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [FEATURED, site] = await Promise.all([getFeatured(), getSiteData()]);
+  const { stats: STATS, lineUrl: LINE_URL } = site;
   return (
     <>
       {/* ============ HERO ============ */}

@@ -28,6 +28,77 @@ const PRODUCTS = [
   { name: "คัพเค้ก (รอข้อมูล)", category: "cupcake", badge: "none", grade: "none", order: 8 },
 ];
 
+// lexical rich-text helper — สร้าง editor state จาก array ย่อหน้า
+function richText(paragraphs) {
+  return {
+    root: {
+      type: "root",
+      format: "",
+      indent: 0,
+      version: 1,
+      direction: "ltr",
+      children: paragraphs.map((text) => ({
+        type: "paragraph",
+        format: "",
+        indent: 0,
+        version: 1,
+        direction: "ltr",
+        textFormat: 0,
+        children: [
+          { type: "text", detail: 0, format: 0, mode: "normal", style: "", text, version: 1 },
+        ],
+      })),
+    },
+  };
+}
+
+const WHATWEDO = [
+  {
+    title: "ผลิตเบเกอรี่",
+    slug: "bakery-production",
+    summary: "อบสดใหม่ทุกวัน คัดวัตถุดิบพรีเมียม",
+    art: "/mascot/outline-mixing.png",
+    order: 0,
+    content: richText([
+      "Simple Cafe ผลิตเบเกอรี่คราฟต์อบสดใหม่ทุกวัน คัดวัตถุดิบพรีเมียม เนยแท้ แป้งคุณภาพ ไม่ใส่สารกันเสีย",
+      "เรามีทั้งสูตรมาตรฐานยอดนิยมและพร้อมพัฒนาสูตรเฉพาะตามความต้องการของลูกค้า ควบคุมคุณภาพทุกล็อตการผลิต",
+    ]),
+  },
+  {
+    title: "จัดเบรก",
+    slug: "catering-break",
+    summary: "เบเกอรี่ + เครื่องดื่ม ครบชุดพร้อมเสิร์ฟ",
+    art: "/mascot/outline-serving.png",
+    order: 1,
+    content: richText([
+      "บริการจัดเบรกครบวงจรสำหรับงานสัมมนา ประชุม อบรม และงานเลี้ยงบริษัท เบเกอรี่อบสดใหม่พร้อมเครื่องดื่ม จัดเป็นชุดพร้อมเสิร์ฟ",
+      "เลือกแพ็กเกจได้ตามงบประมาณและจำนวนคน พร้อมจัดส่งตรงเวลาถึงสถานที่จัดงานทั้งในขอนแก่นและพื้นที่ใกล้เคียง",
+    ]),
+  },
+  {
+    title: "Wholesale / OEM",
+    slug: "wholesale-oem",
+    summary: "รับผลิตส่งธุรกิจ ทำแบรนด์ของคุณได้",
+    art: "/mascot/outline-hug-donut.png",
+    order: 2,
+    content: richText([
+      "รับผลิตเบเกอรี่ส่งธุรกิจ ทั้งร้านคาเฟ่ ร้านอาหาร โรงแรม และร้านค้าปลีก ในราคาส่งพิเศษ ปริมาณยืดหยุ่นตามรอบการสั่ง",
+      "บริการ OEM รับผลิตภายใต้แบรนด์ของคุณ ตั้งแต่พัฒนาสูตร แพ็กเกจจิ้ง จนถึงจัดส่ง เหมาะสำหรับธุรกิจที่ต้องการสร้างแบรนด์เบเกอรี่ของตัวเอง",
+    ]),
+  },
+  {
+    title: "ร้านคาเฟ่",
+    slug: "cafe",
+    summary: "กาแฟและเบเกอรี่หน้าร้าน ขอนแก่น",
+    art: "/mascot/outline-coffee.png",
+    order: 3,
+    content: richText([
+      "ร้านคาเฟ่ Simple Cafe ที่ขอนแก่น เสิร์ฟกาแฟและเบเกอรี่อบสดใหม่หน้าร้าน บรรยากาศอบอุ่นเป็นกันเอง",
+      "แวะมานั่งชิลล์ จิบกาแฟ พร้อมเลือกเบเกอรี่โฮมเมดหลากหลายเมนู หรือสั่งกลับบ้านก็ได้",
+    ]),
+  },
+];
+
 const SITE = {
   brandName: "Simple Cafe",
   tagline: "คราฟต์เบเกอรี่ อบสดใหม่ทุกวัน",
@@ -86,6 +157,16 @@ async function main() {
     const r = await fetch(`${BASE}/api/products`, { method: "POST", headers: auth, body: JSON.stringify(body) });
     const d = await r.json();
     console.log(d.doc?.id ? "＋ product:" : "✗ product FAIL:", p.name, d.doc?.id || JSON.stringify(d.errors || d));
+  }
+
+  // 3b. what-we-do (skip if slug exists)
+  const existingWwd = await (await fetch(`${BASE}/api/what-we-do?limit=100`, { headers: auth })).json();
+  const wwdSlugs = new Set((existingWwd.docs || []).map((w) => w.slug));
+  for (const w of WHATWEDO) {
+    if (wwdSlugs.has(w.slug)) { console.log("• what-we-do exists:", w.slug); continue; }
+    const r = await fetch(`${BASE}/api/what-we-do`, { method: "POST", headers: auth, body: JSON.stringify({ ...w, visible: true }) });
+    const d = await r.json();
+    console.log(d.doc?.id ? "＋ what-we-do:" : "✗ what-we-do FAIL:", w.title, d.doc?.id || JSON.stringify(d.errors || d));
   }
 
   // 4. site-settings global

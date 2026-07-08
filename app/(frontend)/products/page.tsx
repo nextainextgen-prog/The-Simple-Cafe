@@ -4,6 +4,7 @@ import { ProductGrid } from "@/components/product-grid";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/reveal";
 import { getProducts, getCategories } from "@/lib/cms";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "สินค้า",
@@ -15,8 +16,37 @@ export default async function ProductsPage() {
     getProducts(),
     getCategories(),
   ]);
+  const itemListLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "สินค้าเบเกอรี่ Simple Cafe",
+    itemListElement: products.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Product",
+        name: p.name,
+        category: categories.find((c) => c.key === p.category)?.label,
+        ...(p.price != null
+          ? {
+              offers: {
+                "@type": "Offer",
+                price: p.price,
+                priceCurrency: "THB",
+                availability: "https://schema.org/InStock",
+                url: `${SITE_URL}/products`,
+              },
+            }
+          : {}),
+      },
+    })),
+  };
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+      />
       <PageHero
         eyebrow="เมนูของเรา"
         title="สินค้าเบเกอรี่"

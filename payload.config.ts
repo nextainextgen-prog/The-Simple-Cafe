@@ -12,6 +12,7 @@ import { Products } from "./payload/collections/Products";
 import { WhatWeDo } from "./payload/collections/WhatWeDo";
 import { Reviews } from "./payload/collections/Reviews";
 import { ClientLogos } from "./payload/collections/ClientLogos";
+import { Orders } from "./payload/collections/Orders";
 import { SiteSettings } from "./payload/globals/SiteSettings";
 import { SocialProof } from "./payload/globals/SocialProof";
 
@@ -25,7 +26,7 @@ export default buildConfig({
       titleSuffix: "· Simple Cafe หลังบ้าน",
     },
   },
-  collections: [Users, Media, Categories, Products, WhatWeDo, Reviews, ClientLogos],
+  collections: [Users, Media, Categories, Products, WhatWeDo, Reviews, ClientLogos, Orders],
   globals: [SiteSettings, SocialProof],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

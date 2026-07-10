@@ -14,7 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Art } from "@/components/ui/art";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
-import { getFeatured, getSiteData, getWhatWeDo } from "@/lib/cms";
+import {
+  getFeatured,
+  getSiteData,
+  getWhatWeDo,
+  getSocialProof,
+  getClientLogos,
+} from "@/lib/cms";
+import { SITE_URL } from "@/lib/seo";
 
 // fallback ถ้ายังไม่มีข้อมูลใน CMS (การ์ดจะไม่ลิงก์)
 const WHAT_WE_DO_FALLBACK = [
@@ -32,12 +39,40 @@ const WHY = [
 ];
 
 export default async function HomePage() {
-  const [FEATURED, site, wwd] = await Promise.all([
+  const [FEATURED, site, wwd, social, logos] = await Promise.all([
     getFeatured(),
     getSiteData(),
     getWhatWeDo(),
+    getSocialProof(),
+    getClientLogos(),
   ]);
   const { stats: STATS, lineUrl: LINE_URL } = site;
+
+  // JSON-LD: คะแนนรวม + รีวิว (AggregateRating / Review) สำหรับ SEO
+  const reviewJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Bakery",
+    name: site.brand.name,
+    url: SITE_URL,
+    ...(social.count > 0 && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: social.rating,
+        reviewCount: social.count,
+        bestRating: 5,
+      },
+    }),
+    review: social.reviews.slice(0, 5).map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.authorName },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.rating,
+        bestRating: 5,
+      },
+      reviewBody: r.text,
+    })),
+  };
   const WHAT_WE_DO = wwd.length ? wwd : WHAT_WE_DO_FALLBACK;
   return (
     <>
@@ -234,31 +269,93 @@ export default async function HomePage() {
 
       {/* ============ SOCIAL PROOF ============ */}
       <section className="border-y border-line bg-surface">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewJsonLd) }}
+        />
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 text-center">
           <Reveal>
             <div className="flex items-center justify-center gap-1.5">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={22} className="fill-gold-bright text-gold-bright" />
+                <Star
+                  key={i}
+                  size={22}
+                  className={
+                    i < Math.round(social.rating)
+                      ? "fill-gold-bright text-gold-bright"
+                      : "text-line"
+                  }
+                />
               ))}
             </div>
             <p className="mt-3 text-lg font-medium text-ink">
-              4.9 จากรีวิวลูกค้ากว่า 300+ ราย
+              {social.rating.toFixed(1)} จากรีวิวลูกค้ากว่า {social.count.toLocaleString("th-TH")}+
+              ราย
             </p>
             <p className="mt-1 text-sm text-ink-soft">ลูกค้าองค์กรทั่วประเทศไว้วางใจ</p>
           </Reveal>
 
-          <Reveal delay={0.1}>
-            <div className="mt-10 grid grid-cols-2 sm:grid-cols-5 gap-4">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="flex h-16 items-center justify-center rounded-lg border border-dashed border-line bg-cream text-xs text-ink-soft"
-                >
-                  โลโก้ลูกค้า
-                </div>
-              ))}
-            </div>
-          </Reveal>
+          {/* รีวิวจริง (cache จาก Google ผ่าน cron) */}
+          {social.reviews.length > 0 && (
+            <Reveal delay={0.05}>
+              <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-left">
+                {social.reviews.slice(0, 3).map((r) => (
+                  <figure
+                    key={r.id}
+                    className="rounded-2xl border border-line bg-cream p-6"
+                  >
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          size={15}
+                          className={
+                            i < r.rating
+                              ? "fill-gold-bright text-gold-bright"
+                              : "text-line"
+                          }
+                        />
+                      ))}
+                    </div>
+                    <blockquote className="mt-3 text-sm leading-relaxed text-ink-soft line-clamp-5">
+                      {r.text}
+                    </blockquote>
+                    <figcaption className="mt-4 text-sm font-medium text-ink">
+                      {r.authorName}
+                      {r.relativeTime && (
+                        <span className="ml-2 font-normal text-ink-soft">
+                          · {r.relativeTime}
+                        </span>
+                      )}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </Reveal>
+          )}
+
+          {/* โลโก้ลูกค้า — อัปโหลดจากหลังบ้าน (ClientLogos) */}
+          {logos.length > 0 && (
+            <Reveal delay={0.1}>
+              <div className="mt-10 grid grid-cols-2 sm:grid-cols-5 gap-4">
+                {logos.map((c) =>
+                  c.logo ? (
+                    <div
+                      key={c.id}
+                      className="flex h-16 items-center justify-center rounded-lg border border-line bg-cream px-3"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={c.logo.url}
+                        alt={c.logo.alt || c.name}
+                        className="max-h-10 max-w-full object-contain"
+                      />
+                    </div>
+                  ) : null
+                )}
+              </div>
+            </Reveal>
+          )}
         </div>
       </section>
 

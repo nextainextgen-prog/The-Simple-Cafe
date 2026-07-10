@@ -10,6 +10,7 @@ import {
   CATEGORIES as STATIC_CATEGORIES,
 } from "@/lib/products";
 import { BRAND, LINE_URL, NAV, STATS } from "@/lib/site";
+import { MOCK_REVIEWS_PAYLOAD } from "@/lib/google-reviews";
 
 export type CmsProduct = {
   id: string;
@@ -32,6 +33,28 @@ export type WhatWeDoItem = {
   content?: unknown; // lexical rich-text (serialized) — rendered via RichText
   metaTitle?: string;
   metaDescription?: string;
+};
+
+export type Review = {
+  id: string;
+  authorName: string;
+  rating: number;
+  text: string;
+  relativeTime?: string;
+  profilePhoto?: string;
+};
+
+export type SocialProofData = {
+  rating: number; // คะแนนเฉลี่ยที่โชว์
+  count: number; // จำนวนรีวิวที่โชว์
+  reviews: Review[];
+};
+
+export type ClientLogo = {
+  id: string;
+  name: string;
+  logo: { url: string; alt?: string } | null;
+  url?: string;
 };
 
 export type SiteData = {
@@ -157,6 +180,86 @@ export const getWhatWeDoBySlug = cache(
     }
   }
 );
+
+// รีวิว + คะแนนรวม — ดึงจาก DB (cache โดย cron). DB ว่าง/ล่ม = ใช้ mock ระหว่างรอคีย์จริง
+export const getSocialProof = cache(async (): Promise<SocialProofData> => {
+  const mock: SocialProofData = {
+    rating: MOCK_REVIEWS_PAYLOAD.rating ?? 5,
+    count: MOCK_REVIEWS_PAYLOAD.total ?? MOCK_REVIEWS_PAYLOAD.reviews.length,
+    reviews: MOCK_REVIEWS_PAYLOAD.reviews.map((r, i) => ({
+      id: `mock-${i}`,
+      authorName: r.authorName,
+      rating: r.rating,
+      text: r.text,
+      relativeTime: r.relativeTime,
+      profilePhoto: r.profilePhoto || undefined,
+    })),
+  };
+  try {
+    const payload = await getPayload({ config });
+    const [{ docs }, meta] = await Promise.all([
+      payload.find({
+        collection: "reviews",
+        limit: 20,
+        sort: "order",
+        where: { visible: { equals: true } },
+      }),
+      payload.findGlobal({ slug: "social-proof" }).catch(() => null as any),
+    ]);
+
+    const reviews: Review[] = docs.map((d: any) => ({
+      id: String(d.id),
+      authorName: d.authorName,
+      rating: typeof d.rating === "number" ? d.rating : 5,
+      text: d.text || "",
+      relativeTime: d.relativeTime || undefined,
+      profilePhoto: d.profilePhoto || undefined,
+    }));
+
+    if (!reviews.length) return mock; // ยังไม่เคย sync → mock
+
+    const rating =
+      meta && typeof meta.googleRating === "number"
+        ? meta.googleRating
+        : Number(
+            (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
+          );
+    const count =
+      meta && typeof meta.googleReviewCount === "number"
+        ? meta.googleReviewCount
+        : reviews.length;
+
+    return { rating, count, reviews };
+  } catch (err) {
+    console.error("[cms] getSocialProof fell back to mock:", err);
+    return mock;
+  }
+});
+
+export const getClientLogos = cache(async (): Promise<ClientLogo[]> => {
+  try {
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
+      collection: "client-logos",
+      depth: 1,
+      limit: 50,
+      sort: "order",
+      where: { visible: { equals: true } },
+    });
+    return docs.map((d: any) => ({
+      id: String(d.id),
+      name: d.name,
+      logo:
+        d.logo && typeof d.logo === "object"
+          ? { url: d.logo.url, alt: d.logo.alt || d.name }
+          : null,
+      url: d.url || undefined,
+    }));
+  } catch (err) {
+    console.error("[cms] getClientLogos returned empty:", err);
+    return [];
+  }
+});
 
 export const getSiteData = cache(async (): Promise<SiteData> => {
   try {

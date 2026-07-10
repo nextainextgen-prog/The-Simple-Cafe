@@ -22,6 +22,18 @@ export type CmsProduct = {
 
 export type CmsCategory = { key: string; label: string };
 
+export type WhatWeDoItem = {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  art?: string;
+  image?: { url: string; alt?: string } | null;
+  content?: unknown; // lexical rich-text (serialized) — rendered via RichText
+  metaTitle?: string;
+  metaDescription?: string;
+};
+
 export type SiteData = {
   brand: {
     name: string;
@@ -91,6 +103,60 @@ export const getCategories = cache(async (): Promise<CmsCategory[]> => {
     return STATIC_CATEGORIES.map((c) => ({ key: c.key, label: c.label }));
   }
 });
+
+function mapWhatWeDo(d: any): WhatWeDoItem {
+  return {
+    id: String(d.id),
+    title: d.title,
+    slug: d.slug,
+    summary: d.summary,
+    art: d.art || undefined,
+    image:
+      d.image && typeof d.image === "object"
+        ? { url: d.image.url, alt: d.image.alt || d.title }
+        : null,
+    content: d.content ?? undefined,
+    metaTitle: d.metaTitle || undefined,
+    metaDescription: d.metaDescription || undefined,
+  };
+}
+
+export const getWhatWeDo = cache(async (): Promise<WhatWeDoItem[]> => {
+  try {
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
+      collection: "what-we-do",
+      depth: 1,
+      limit: 100,
+      sort: "order",
+      where: { visible: { equals: true } },
+    });
+    return docs.map(mapWhatWeDo);
+  } catch (err) {
+    console.error("[cms] getWhatWeDo failed:", err);
+    return [];
+  }
+});
+
+export const getWhatWeDoBySlug = cache(
+  async (slug: string): Promise<WhatWeDoItem | null> => {
+    try {
+      const payload = await getPayload({ config });
+      const { docs } = await payload.find({
+        collection: "what-we-do",
+        depth: 1,
+        limit: 1,
+        where: {
+          and: [{ slug: { equals: slug } }, { visible: { equals: true } }],
+        },
+      });
+      return docs[0] ? mapWhatWeDo(docs[0]) : null;
+    } catch (err) {
+      console.error("[cms] getWhatWeDoBySlug failed:", err);
+      return null;
+    }
+  }
+);
 
 export const getSiteData = cache(async (): Promise<SiteData> => {
   try {

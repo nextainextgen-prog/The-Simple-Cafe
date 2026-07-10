@@ -14,13 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Art } from "@/components/ui/art";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
-import { getFeatured, getSiteData } from "@/lib/cms";
+import { getFeatured, getSiteData, getWhatWeDo } from "@/lib/cms";
 
-const WHAT_WE_DO = [
-  { title: "ผลิตเบเกอรี่", desc: "อบสดใหม่ทุกวัน คัดวัตถุดิบพรีเมียม", art: "/mascot/outline-mixing.png" },
-  { title: "จัดเบรก", desc: "เบเกอรี่ + เครื่องดื่ม ครบชุดพร้อมเสิร์ฟ", art: "/mascot/outline-serving.png" },
-  { title: "Wholesale / OEM", desc: "รับผลิตส่งธุรกิจ ทำแบรนด์ของคุณได้", art: "/mascot/outline-hug-donut.png" },
-  { title: "ร้านคาเฟ่", desc: "กาแฟและเบเกอรี่หน้าร้าน ขอนแก่น", art: "/mascot/outline-coffee.png" },
+// fallback ถ้ายังไม่มีข้อมูลใน CMS (การ์ดจะไม่ลิงก์)
+const WHAT_WE_DO_FALLBACK = [
+  { title: "ผลิตเบเกอรี่", summary: "อบสดใหม่ทุกวัน คัดวัตถุดิบพรีเมียม", art: "/mascot/outline-mixing.png", slug: "" },
+  { title: "จัดเบรก", summary: "เบเกอรี่ + เครื่องดื่ม ครบชุดพร้อมเสิร์ฟ", art: "/mascot/outline-serving.png", slug: "" },
+  { title: "Wholesale / OEM", summary: "รับผลิตส่งธุรกิจ ทำแบรนด์ของคุณได้", art: "/mascot/outline-hug-donut.png", slug: "" },
+  { title: "ร้านคาเฟ่", summary: "กาแฟและเบเกอรี่หน้าร้าน ขอนแก่น", art: "/mascot/outline-coffee.png", slug: "" },
 ];
 
 const WHY = [
@@ -31,8 +32,13 @@ const WHY = [
 ];
 
 export default async function HomePage() {
-  const [FEATURED, site] = await Promise.all([getFeatured(), getSiteData()]);
+  const [FEATURED, site, wwd] = await Promise.all([
+    getFeatured(),
+    getSiteData(),
+    getWhatWeDo(),
+  ]);
   const { stats: STATS, lineUrl: LINE_URL } = site;
+  const WHAT_WE_DO = wwd.length ? wwd : WHAT_WE_DO_FALLBACK;
   return (
     <>
       {/* ============ HERO ============ */}
@@ -99,7 +105,7 @@ export default async function HomePage() {
       </section>
 
       {/* ============ WHAT WE DO ============ */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 py-20">
+      <section id="what-we-do" className="mx-auto max-w-6xl px-4 sm:px-6 py-20 scroll-mt-28">
         <Reveal>
           <div className="text-center max-w-xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-semibold text-ink">สิ่งที่เราทำ</h2>
@@ -109,15 +115,37 @@ export default async function HomePage() {
           </div>
         </Reveal>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {WHAT_WE_DO.map((item, i) => (
-            <Reveal key={item.title} delay={i * 0.08}>
-              <div className="group h-full rounded-[10px] border border-line bg-surface p-6 text-center transition-colors hover:border-brand">
-                <Art src={item.art} className="mx-auto h-28 w-28" sizes="112px" />
+          {WHAT_WE_DO.map((item, i) => {
+            const inner = (
+              <>
+                <Art
+                  src={item.art || "/mascot/outline-hello.png"}
+                  className="mx-auto h-28 w-28"
+                  sizes="112px"
+                />
                 <h3 className="mt-4 text-lg font-semibold text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm text-ink-soft leading-relaxed">{item.desc}</p>
-              </div>
-            </Reveal>
-          ))}
+                <p className="mt-2 text-sm text-ink-soft leading-relaxed">{item.summary}</p>
+                {item.slug && (
+                  <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand transition-all group-hover:gap-2">
+                    อ่านเพิ่มเติม <ArrowRight size={15} />
+                  </span>
+                )}
+              </>
+            );
+            const cardClass =
+              "group h-full rounded-[10px] border border-line bg-surface p-6 text-center transition-colors hover:border-brand";
+            return (
+              <Reveal key={item.slug || item.title} delay={i * 0.08}>
+                {item.slug ? (
+                  <Link href={`/what-we-do/${item.slug}`} className={`block ${cardClass}`}>
+                    {inner}
+                  </Link>
+                ) : (
+                  <div className={cardClass}>{inner}</div>
+                )}
+              </Reveal>
+            );
+          })}
         </div>
       </section>
 

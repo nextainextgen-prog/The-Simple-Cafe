@@ -9,6 +9,7 @@ import { Users } from "./payload/collections/Users";
 import { Media } from "./payload/collections/Media";
 import { Categories } from "./payload/collections/Categories";
 import { Products } from "./payload/collections/Products";
+import { WhatWeDo } from "./payload/collections/WhatWeDo";
 import { SiteSettings } from "./payload/globals/SiteSettings";
 
 const filename = fileURLToPath(import.meta.url);
@@ -21,7 +22,7 @@ export default buildConfig({
       titleSuffix: "· Simple Cafe หลังบ้าน",
     },
   },
-  collections: [Users, Media, Categories, Products],
+  collections: [Users, Media, Categories, Products, WhatWeDo],
   globals: [SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

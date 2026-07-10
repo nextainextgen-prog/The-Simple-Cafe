@@ -1,9 +1,19 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Clock, MessageCircle } from "lucide-react";
-import { NAV, BRAND, LINE_URL } from "@/lib/site";
 
-export function SiteFooter() {
+type NavItem = { label: string; href: string };
+type Brand = { name: string; tagline: string; phone: string; address: string; hours: string };
+
+export function SiteFooter({
+  nav,
+  brand,
+  lineUrl,
+}: {
+  nav: NavItem[];
+  brand: Brand;
+  lineUrl: string;
+}) {
   return (
     <>
       <footer className="mt-24 border-t border-line bg-surface">
@@ -19,11 +29,11 @@ export function SiteFooter() {
                 className="h-9 w-9 object-contain"
               />
               <span className="font-display text-lg font-semibold text-ink">
-                {BRAND.name}
+                {brand.name}
               </span>
             </div>
             <p className="mt-3 text-sm text-ink-soft leading-relaxed">
-              {BRAND.tagline}
+              {brand.tagline}
               <br />
               รับผลิต OEM · จัดเบรก · ส่งทั่วประเทศ
             </p>
@@ -32,7 +42,7 @@ export function SiteFooter() {
           {/* เมนู */}
           <nav className="flex flex-col gap-2.5">
             <p className="font-display font-semibold text-ink mb-1">เมนู</p>
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -48,15 +58,15 @@ export function SiteFooter() {
             <p className="font-display font-semibold text-ink mb-1">ติดต่อ</p>
             <span className="flex items-start gap-2 text-sm text-ink-soft">
               <MapPin size={16} className="mt-0.5 shrink-0 text-brand" />
-              {BRAND.address}
+              {brand.address}
             </span>
             <span className="flex items-center gap-2 text-sm text-ink-soft">
               <Phone size={16} className="shrink-0 text-brand" />
-              {BRAND.phone}
+              {brand.phone}
             </span>
             <span className="flex items-center gap-2 text-sm text-ink-soft">
               <Clock size={16} className="shrink-0 text-brand" />
-              {BRAND.hours}
+              {brand.hours}
             </span>
           </div>
 
@@ -66,7 +76,7 @@ export function SiteFooter() {
               สั่ง / ขอใบเสนอราคา
             </p>
             <a
-              href={LINE_URL}
+              href={lineUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#06C755] px-4 py-2.5 text-sm font-medium text-white transition hover:brightness-95 w-fit"
@@ -85,7 +95,7 @@ export function SiteFooter() {
         <div className="border-t border-line">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 py-5 text-xs text-ink-soft flex flex-col sm:flex-row items-center justify-between gap-2">
             <span>
-              © {new Date().getFullYear()} {BRAND.name}. สงวนลิขสิทธิ์
+              © {new Date().getFullYear()} {brand.name}. สงวนลิขสิทธิ์
             </span>
             <span>อบสดใหม่ทุกวัน · ไม่ใส่สารกันเสีย</span>
           </div>
@@ -94,7 +104,7 @@ export function SiteFooter() {
 
       {/* Floating LINE (มือถือ) */}
       <a
-        href={LINE_URL}
+        href={lineUrl}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="แอด LINE"

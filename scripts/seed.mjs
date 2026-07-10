@@ -1,0 +1,99 @@
+// Seed the CMS with current hardcoded content (lib/products.ts + lib/site.ts)
+// via the REST API using an admin JWT. Idempotent-ish: skips a category/product
+// if one with the same key/name already exists.
+//
+// Usage: node scripts/seed.mjs [baseUrl] [email] [password]
+const BASE = process.argv[2] || "http://localhost:3007";
+const EMAIL = process.argv[3] || "admin@simplecafe.co";
+const PASSWORD = process.argv[4] || "SimpleCafe123!";
+
+const CATEGORIES = [
+  { key: "cake", label: "เค้ก", order: 0 },
+  { key: "cupcake", label: "คัพเค้ก", order: 1 },
+  { key: "bread", label: "ขนมปัง", order: 2 },
+  { key: "croissant", label: "ครัวซองต์", order: 3 },
+  { key: "cookie", label: "คุกกี้", order: 4 },
+  { key: "other", label: "อื่นๆ", order: 5 },
+];
+
+const PRODUCTS = [
+  { name: "ครัวซองต์เนยฝรั่งเศส", price: 65, category: "croissant", badge: "ขายดี", grade: "พรีเมียม", order: 0 },
+  { name: "ซาวโดว์โฮมเมด", price: 120, category: "bread", badge: "ขายดี", grade: "none", order: 1 },
+  { name: "คุกกี้ช็อกโกแลตชิป", price: 45, category: "cookie", badge: "none", grade: "มาตรฐาน", order: 2 },
+  { name: "บัตเตอร์เค้กเนยสด", price: 320, category: "cake", badge: "ใหม่", grade: "พรีเมียม", order: 3 },
+  { name: "บาแกตต์ฝรั่งเศส", price: 75, category: "bread", badge: "none", grade: "none", order: 4 },
+  { name: "โดนัทเคลือบช็อก", price: 55, category: "other", badge: "ใหม่", grade: "none", order: 5 },
+  { name: "คัพเค้ก (รอข้อมูล)", category: "cupcake", badge: "ใหม่", grade: "none", order: 6 },
+  { name: "คัพเค้ก (รอข้อมูล)", category: "cupcake", badge: "none", grade: "none", order: 7 },
+  { name: "คัพเค้ก (รอข้อมูล)", category: "cupcake", badge: "none", grade: "none", order: 8 },
+];
+
+const SITE = {
+  brandName: "Simple Cafe",
+  tagline: "คราฟต์เบเกอรี่ อบสดใหม่ทุกวัน",
+  phone: "0X-XXX-XXXX",
+  lineId: "@simplecafe",
+  lineUrl: "https://page.line.me/thesimplecafe.kk?openQrModal=true",
+  email: "hello@simplecafe.co",
+  address: "ขอนแก่น",
+  hours: "ทุกวัน 08:00 – 18:00 น.",
+  nav: [
+    { label: "หน้าแรก", href: "/" },
+    { label: "สินค้า", href: "/products" },
+    { label: "จัดเบรก", href: "/catering" },
+    { label: "รับผลิต/ส่ง", href: "/wholesale" },
+    { label: "เกี่ยวกับเรา", href: "/about" },
+    { label: "ติดต่อ", href: "/contact" },
+  ],
+  stats: [
+    { value: "6+", label: "ปีประสบการณ์" },
+    { value: "60+", label: "ลูกค้าองค์กร" },
+    { value: "ทุกวัน", label: "อบสดใหม่" },
+    { value: "ทั่วประเทศ", label: "จัดส่ง" },
+  ],
+};
+
+async function main() {
+  // 1. login
+  const loginRes = await fetch(`${BASE}/api/users/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: EMAIL, password: PASSWORD }),
+  });
+  const login = await loginRes.json();
+  if (!login.token) throw new Error("login failed: " + JSON.stringify(login));
+  const auth = { "Content-Type": "application/json", Authorization: `JWT ${login.token}` };
+  console.log("✓ logged in as", login.user?.email);
+
+  // 2. categories (skip if key exists) -> map key -> id
+  const catId = {};
+  const existingCats = await (await fetch(`${BASE}/api/categories?limit=100`, { headers: auth })).json();
+  for (const c of existingCats.docs || []) catId[c.key] = c.id;
+  for (const c of CATEGORIES) {
+    if (catId[c.key]) { console.log("• category exists:", c.key); continue; }
+    const r = await fetch(`${BASE}/api/categories`, { method: "POST", headers: auth, body: JSON.stringify(c) });
+    const d = await r.json();
+    catId[c.key] = d.doc?.id;
+    console.log("＋ category:", c.label, "->", d.doc?.id);
+  }
+
+  // 3. products (skip if name+order exists)
+  const existingProds = await (await fetch(`${BASE}/api/products?limit=200`, { headers: auth })).json();
+  const seen = new Set((existingProds.docs || []).map((p) => `${p.name}#${p.order}`));
+  for (const p of PRODUCTS) {
+    if (seen.has(`${p.name}#${p.order}`)) { console.log("• product exists:", p.name, p.order); continue; }
+    const body = { ...p, category: catId[p.category], visible: true };
+    const r = await fetch(`${BASE}/api/products`, { method: "POST", headers: auth, body: JSON.stringify(body) });
+    const d = await r.json();
+    console.log(d.doc?.id ? "＋ product:" : "✗ product FAIL:", p.name, d.doc?.id || JSON.stringify(d.errors || d));
+  }
+
+  // 4. site-settings global
+  const r = await fetch(`${BASE}/api/globals/site-settings`, { method: "POST", headers: auth, body: JSON.stringify(SITE) });
+  const d = await r.json();
+  console.log(r.ok ? "✓ site-settings saved" : "✗ site-settings FAIL: " + JSON.stringify(d).slice(0, 200));
+
+  console.log("\nSeed done.");
+}
+
+main().catch((e) => { console.error(e); process.exit(1); });

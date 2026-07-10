@@ -5,8 +5,7 @@ import { Reveal } from "@/components/reveal";
 import { Art } from "@/components/ui/art";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { QuoteForm } from "@/components/quote-form";
-import { PRODUCTS } from "@/lib/products";
-import { STATS } from "@/lib/site";
+import { getProducts, getSiteData } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "รับผลิต / ส่ง (Wholesale)",
@@ -27,7 +26,9 @@ const STEPS = [
   { n: "4", title: "จัดส่งถึงที่", desc: "ส่งตรงเวลา ขอนแก่นทุกวัน ทั่วประเทศ", art: "/mascot/outline-hug-donut.png" },
 ];
 
-export default function WholesalePage() {
+export default async function WholesalePage() {
+  const [PRODUCTS, site] = await Promise.all([getProducts(), getSiteData()]);
+  const STATS = site.stats;
   return (
     <>
       <PageHero

@@ -4,14 +4,15 @@ import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { ContactForm } from "@/components/contact-form";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
-import { BRAND, LINE_URL } from "@/lib/site";
+import { getSiteData } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "ติดต่อ",
   description: "ติดต่อ Simple Cafe — สั่งเบเกอรี่ จัดเบรก ขอใบเสนอราคา ผ่าน LINE โทร หรืออีเมล ส่งขอนแก่นและทั่วประเทศ",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { brand: BRAND, lineUrl: LINE_URL } = await getSiteData();
   const info = [
     { icon: MapPin, label: "ที่อยู่", value: BRAND.address },
     { icon: Phone, label: "โทร", value: BRAND.phone },

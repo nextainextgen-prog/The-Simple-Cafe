@@ -14,6 +14,7 @@ import { WhatWeDo } from "./payload/collections/WhatWeDo";
 import { Reviews } from "./payload/collections/Reviews";
 import { ClientLogos } from "./payload/collections/ClientLogos";
 import { Orders } from "./payload/collections/Orders";
+import { Leads } from "./payload/collections/Leads";
 import { SiteSettings } from "./payload/globals/SiteSettings";
 import { SocialProof } from "./payload/globals/SocialProof";
 import { revalidateSite } from "./lib/revalidate";
@@ -75,9 +76,19 @@ export default buildConfig({
       titleSuffix: "· Simple Cafe หลังบ้าน",
     },
   },
-  collections: [Users, Media, Categories, Products, WhatWeDo, Reviews, ClientLogos, Orders].map(
-    withRevalidate
-  ),
+  // Leads ผ่าน withRevalidate ได้ปลอดภัย — "leads" ไม่อยู่ใน CONTENT_SLUGS จึงไม่ติด hook
+  // (lead ไม่ได้ขึ้นหน้าเว็บ ไม่ต้อง revalidate ทั้งเว็บทุกครั้งที่ลูกค้าส่งฟอร์ม)
+  collections: [
+    Users,
+    Media,
+    Categories,
+    Products,
+    WhatWeDo,
+    Reviews,
+    ClientLogos,
+    Orders,
+    Leads,
+  ].map(withRevalidate),
   globals: [SiteSettings, SocialProof].map(withGlobalRevalidate),
   plugins: storagePlugins,
   editor: lexicalEditor(),

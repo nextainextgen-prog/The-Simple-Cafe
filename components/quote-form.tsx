@@ -1,28 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { CheckCircle2 } from "lucide-react";
 import { ButtonEl } from "@/components/ui/button";
+import { Field, Honeypot, inputCls } from "@/components/ui/field";
+import { submitQuote } from "@/lib/actions/leads";
+import { initialLeadState } from "@/lib/actions/lead-state";
 
-const inputCls =
-  "w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-sm text-ink outline-none transition focus:border-brand";
-const labelCls = "block text-sm font-medium text-ink mb-1.5";
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <ButtonEl type="submit" size="lg" className="w-full" disabled={pending}>
+      {pending ? "กำลังส่ง..." : "ขอใบเสนอราคา"}
+    </ButtonEl>
+  );
+}
 
+// useActionState รีเซ็ตเองไม่ได้ — เปลี่ยน key เพื่อ remount ตัวใน คือวิธีล้างสถานะให้กลับไปเป็นฟอร์มเปล่า
 export function QuoteForm() {
-  const [sent, setSent] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  return <QuoteFormFields key={attempt} onReset={() => setAttempt((n) => n + 1)} />;
+}
 
-  if (sent) {
+function QuoteFormFields({ onReset }: { onReset: () => void }) {
+  const [state, formAction] = useActionState(submitQuote, initialLeadState);
+
+  if (state.ok) {
     return (
-      <div className="rounded-[10px] border border-line bg-surface p-8 text-center">
+      <div
+        role="status"
+        className="rounded-[10px] border border-line bg-surface p-8 text-center"
+      >
         <CheckCircle2 className="mx-auto text-brand" size={40} />
         <h3 className="mt-4 text-xl font-semibold text-ink">ส่งคำขอเรียบร้อย</h3>
         <p className="mt-2 text-ink-soft">
           ทีมงานจะติดต่อกลับพร้อมใบเสนอราคาภายใน 2-3 วันทำการ ขอบคุณครับ
         </p>
-        <button
-          onClick={() => setSent(false)}
-          className="mt-5 text-sm text-brand hover:underline"
-        >
+        <button onClick={onReset} className="mt-5 text-sm text-brand hover:underline">
           ส่งคำขอใหม่อีกครั้ง
         </button>
       </div>
@@ -31,70 +46,103 @@ export function QuoteForm() {
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        setSent(true);
-      }}
+      action={formAction}
       className="rounded-[10px] border border-line bg-surface p-6 sm:p-8 space-y-4"
     >
-      <div>
-        <label className={labelCls}>ชื่อธุรกิจ / ร้าน *</label>
-        <input required className={inputCls} placeholder="เช่น ร้านกาแฟ ABC" />
+      <Honeypot />
+
+      <Field label="ชื่อธุรกิจ / ร้าน" required error={state.errors?.businessName}>
+        {(p) => (
+          <input
+            {...p}
+            name="businessName"
+            className={inputCls}
+            placeholder="เช่น ร้านกาแฟ ABC"
+          />
+        )}
+      </Field>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="ประเภทธุรกิจ" required error={state.errors?.businessType}>
+          {(p) => (
+            <select {...p} name="businessType" className={inputCls} defaultValue="">
+              <option value="" disabled>
+                เลือกประเภท
+              </option>
+              <option value="cafe">คาเฟ่</option>
+              <option value="restaurant">ร้านอาหาร</option>
+              <option value="hotel">โรงแรม</option>
+              <option value="catering">จัดเลี้ยง / จัดเบรก</option>
+              <option value="other">อื่นๆ</option>
+            </select>
+          )}
+        </Field>
+
+        <Field label="ปริมาณ & ความถี่">
+          {(p) => (
+            <input
+              {...p}
+              name="volume"
+              className={inputCls}
+              placeholder="เช่น 200 ชิ้น/สัปดาห์"
+            />
+          )}
+        </Field>
+      </div>
+
+      <Field label="สินค้าที่สนใจ">
+        {(p) => (
+          <input
+            {...p}
+            name="products"
+            className={inputCls}
+            placeholder="เช่น ครัวซองต์ ซาวโดว์ เค้ก"
+          />
+        )}
+      </Field>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="ชื่อผู้ติดต่อ" required error={state.errors?.name}>
+          {(p) => (
+            <input {...p} name="name" className={inputCls} placeholder="ชื่อ-นามสกุล" />
+          )}
+        </Field>
+
+        <Field label="เบอร์โทร" required error={state.errors?.phone}>
+          {(p) => (
+            <input {...p} name="phone" className={inputCls} placeholder="0X-XXX-XXXX" />
+          )}
+        </Field>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className={labelCls}>ประเภทธุรกิจ *</label>
-          <select required className={inputCls} defaultValue="">
-            <option value="" disabled>
-              เลือกประเภท
-            </option>
-            <option>คาเฟ่</option>
-            <option>ร้านอาหาร</option>
-            <option>โรงแรม</option>
-            <option>จัดเลี้ยง / จัดเบรก</option>
-            <option>อื่นๆ</option>
-          </select>
-        </div>
-        <div>
-          <label className={labelCls}>ปริมาณ &amp; ความถี่</label>
-          <input className={inputCls} placeholder="เช่น 200 ชิ้น/สัปดาห์" />
-        </div>
+        <Field label="LINE ID">
+          {(p) => (
+            <input {...p} name="lineId" className={inputCls} placeholder="@yourline" />
+          )}
+        </Field>
+
+        <Field label="อีเมล" error={state.errors?.email}>
+          {(p) => (
+            <input
+              {...p}
+              type="email"
+              name="email"
+              className={inputCls}
+              placeholder="you@email.com"
+            />
+          )}
+        </Field>
       </div>
 
-      <div>
-        <label className={labelCls}>สินค้าที่สนใจ</label>
-        <input className={inputCls} placeholder="เช่น ครัวซองต์ ซาวโดว์ เค้ก" />
-      </div>
+      {state.formError ? (
+        <p role="alert" className="text-sm text-red-600">
+          {state.formError}
+        </p>
+      ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className={labelCls}>ชื่อผู้ติดต่อ *</label>
-          <input required className={inputCls} placeholder="ชื่อ-นามสกุล" />
-        </div>
-        <div>
-          <label className={labelCls}>เบอร์โทร *</label>
-          <input required className={inputCls} placeholder="0X-XXX-XXXX" />
-        </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className={labelCls}>LINE ID</label>
-          <input className={inputCls} placeholder="@yourline" />
-        </div>
-        <div>
-          <label className={labelCls}>อีเมล</label>
-          <input type="email" className={inputCls} placeholder="you@email.com" />
-        </div>
-      </div>
-
-      <ButtonEl type="submit" size="lg" className="w-full">
-        ขอใบเสนอราคา
-      </ButtonEl>
-      <p className="text-center text-xs text-ink-soft">
-        ทีมงานตอบกลับภายใน 2-3 วันทำการ
-      </p>
+      <SubmitButton />
+      <p className="text-center text-xs text-ink-soft">ทีมงานตอบกลับภายใน 2-3 วันทำการ</p>
     </form>
   );
 }

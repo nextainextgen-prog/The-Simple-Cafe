@@ -1,7 +1,7 @@
 import type { CollectionConfig, PayloadRequest } from "payload";
 
-// ออเดอร์ — สร้างจากหน้าร้าน (/api/orders) แก้สถานะ/ดูรายละเอียดในหลังบ้าน
-// สร้างผ่านเว็บได้โดยไม่ต้องล็อกอิน (create เปิด) แต่ดู/แก้ต้องเป็นแอดมิน
+// ออเดอร์ — สร้างจากหน้าร้านผ่าน /api/checkout (Local API ซึ่ง bypass access อยู่แล้ว)
+// ทุก op ต้องล็อกอินหลังบ้าน — กันคนนอกยิง POST /api/orders ปลอมราคา/สถานะเอง
 export const Orders: CollectionConfig = {
   slug: "orders",
   admin: {
@@ -14,8 +14,8 @@ export const Orders: CollectionConfig = {
     plural: "ออเดอร์",
   },
   access: {
-    // ลูกค้าหน้าร้านสร้างออเดอร์ได้ (ผ่าน local API อยู่แล้วก็ bypass) — เปิด create ไว้
-    create: () => true,
+    // การสั่งซื้อหน้าร้านสร้างผ่าน checkout route (Local API, overrideAccess) — ไม่ต้องเปิด create สาธารณะ
+    create: ({ req }) => Boolean(req.user),
     // ดู/แก้/ลบ เฉพาะผู้ล็อกอินหลังบ้าน
     read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),

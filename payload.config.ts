@@ -15,6 +15,9 @@ import { Reviews } from "./payload/collections/Reviews";
 import { ClientLogos } from "./payload/collections/ClientLogos";
 import { Orders } from "./payload/collections/Orders";
 import { Leads } from "./payload/collections/Leads";
+import { CateringPackages } from "./payload/collections/CateringPackages";
+import { CateringMenu } from "./payload/collections/CateringMenu";
+import { CateringFaq } from "./payload/collections/CateringFaq";
 import { SiteSettings } from "./payload/globals/SiteSettings";
 import { SocialProof } from "./payload/globals/SocialProof";
 import { revalidateSite } from "./lib/revalidate";
@@ -30,6 +33,9 @@ const CONTENT_SLUGS = new Set([
   "reviews",
   "client-logos",
   "media",
+  "catering-packages",
+  "catering-menu",
+  "catering-faq",
 ]);
 
 const revalidateHook = () => {
@@ -88,6 +94,9 @@ export default buildConfig({
     ClientLogos,
     Orders,
     Leads,
+    CateringPackages,
+    CateringMenu,
+    CateringFaq,
   ].map(withRevalidate),
   globals: [SiteSettings, SocialProof].map(withGlobalRevalidate),
   plugins: storagePlugins,

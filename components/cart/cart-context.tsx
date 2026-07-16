@@ -33,6 +33,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- ตั้งใจ: โหลด cart จาก localStorage ตอน mount (hydration-safe ด้วย flag `ready`) เป็นการ sync กับ external system ที่ถูกต้อง
       if (raw) setLines(JSON.parse(raw));
     } catch {
       /* ignore */

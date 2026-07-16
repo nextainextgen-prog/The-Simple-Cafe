@@ -3,6 +3,8 @@ import { Noto_Sans_Thai, Cormorant, Caveat } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { CartProvider } from "@/components/cart/cart-context";
+import { FloatingCart } from "@/components/cart/floating-cart";
 import { getSiteData } from "@/lib/cms";
 import { SITE_URL } from "@/lib/seo";
 
@@ -85,9 +87,12 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(businessLd) }}
         />
-        <SiteHeader nav={site.nav} lineUrl={site.lineUrl} />
-        <main className="flex-1">{children}</main>
-        <SiteFooter nav={site.nav} brand={site.brand} lineUrl={site.lineUrl} />
+        <CartProvider>
+          <SiteHeader nav={site.nav} lineUrl={site.lineUrl} />
+          <main className="flex-1">{children}</main>
+          <SiteFooter nav={site.nav} brand={site.brand} lineUrl={site.lineUrl} />
+          <FloatingCart />
+        </CartProvider>
       </body>
     </html>
   );

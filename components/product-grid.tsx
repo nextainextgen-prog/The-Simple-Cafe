@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { Badge } from "@/components/ui/badge";
+import { AddToCart } from "@/components/cart/add-to-cart";
 import { cn } from "@/lib/utils";
 import type { CmsProduct, CmsCategory } from "@/lib/cms";
 
@@ -71,6 +72,7 @@ export function ProductGrid({
             <p className="mt-1 text-center font-accent text-brand font-semibold">
               {p.price != null ? `฿${p.price}` : "สอบถามราคา"}
             </p>
+            <AddToCart id={p.id} name={p.name} price={p.price} />
           </div>
         ))}
       </div>

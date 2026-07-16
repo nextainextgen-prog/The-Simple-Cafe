@@ -298,3 +298,91 @@ export const getSiteData = cache(async (): Promise<SiteData> => {
     };
   }
 });
+
+// ---- จัดเบรก (catering) — ย้ายจาก hardcode ในหน้า catering เข้า CMS ----
+export type CateringPackage = {
+  id: string;
+  name: string;
+  price: string; // ราคาต่อท่าน (string เพื่อคงรูปแบบเดิมในหน้าเว็บ)
+  featured: boolean;
+  items: string[];
+};
+export type CateringMenuGroup = { id: string; title: string; items: string[] };
+export type CateringFaqItem = { id: string; q: string; a: string };
+
+// fallback = ค่าเดิมที่เคย hardcode ในหน้า catering (กันหน้าพังตอน DB ว่าง/ล่ม)
+const CATERING_PACKAGES_FALLBACK: CateringPackage[] = [
+  { id: "f0", name: "แพ็กเกจเริ่มต้น", price: "89", featured: false, items: ["เบเกอรี่ 2 ชิ้น/ท่าน", "เครื่องดื่ม 1 แก้ว", "จัดเซ็ตพร้อมเสิร์ฟ"] },
+  { id: "f1", name: "แพ็กเกจมาตรฐาน", price: "139", featured: true, items: ["เบเกอรี่ 3 ชิ้น/ท่าน", "เครื่องดื่ม 1 แก้ว", "ของว่าง 1 อย่าง", "อุปกรณ์ครบชุด"] },
+  { id: "f2", name: "แพ็กเกจพรีเมียม", price: "199", featured: false, items: ["เบเกอรี่พรีเมียม 4 ชิ้น/ท่าน", "เครื่องดื่ม 2 แก้ว", "ของว่าง 2 อย่าง", "จัด Table Setting"] },
+];
+const CATERING_MENU_FALLBACK: CateringMenuGroup[] = [
+  { id: "f0", title: "เบเกอรี่", items: ["ครัวซองต์", "ขนมปัง", "เค้ก", "คัพเค้ก", "คุกกี้", "โดนัท"] },
+  { id: "f1", title: "เครื่องดื่ม", items: ["กาแฟ", "ชา / มัทฉะ", "โกโก้", "น้ำผลไม้", "สมูทตี้", "น้ำเปล่า / โซดา"] },
+];
+const CATERING_FAQ_FALLBACK: CateringFaqItem[] = [
+  { id: "f0", q: "ขั้นต่ำในการสั่ง", a: "รับจัดเบรกขั้นต่ำ 20 ท่านขึ้นไป สำหรับงานเล็กสามารถสอบถามเพิ่มเติมได้" },
+  { id: "f1", q: "จองล่วงหน้ากี่วัน", a: "แนะนำจองล่วงหน้าอย่างน้อย 2-3 วัน สำหรับงานใหญ่หรือเมนูพิเศษ 5-7 วัน" },
+  { id: "f2", q: "พื้นที่จัดส่ง", a: "ขอนแก่นส่งถึงงานทุกวัน ต่างจังหวัดจัดส่งได้ทั่วประเทศ (มีค่าจัดส่งตามระยะทาง)" },
+];
+
+export const getCateringPackages = cache(async (): Promise<CateringPackage[]> => {
+  try {
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
+      collection: "catering-packages",
+      limit: 50,
+      sort: "order",
+      where: { visible: { equals: true } },
+    });
+    if (!docs.length) return CATERING_PACKAGES_FALLBACK;
+    return docs.map((d: any) => ({
+      id: String(d.id),
+      name: d.name,
+      price: String(d.pricePerPerson ?? ""),
+      featured: Boolean(d.featured),
+      items: Array.isArray(d.items) ? d.items.map((i: any) => i.text).filter(Boolean) : [],
+    }));
+  } catch (err) {
+    console.error("[cms] getCateringPackages fell back to static data:", err);
+    return CATERING_PACKAGES_FALLBACK;
+  }
+});
+
+export const getCateringMenu = cache(async (): Promise<CateringMenuGroup[]> => {
+  try {
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
+      collection: "catering-menu",
+      limit: 50,
+      sort: "order",
+      where: { visible: { equals: true } },
+    });
+    if (!docs.length) return CATERING_MENU_FALLBACK;
+    return docs.map((d: any) => ({
+      id: String(d.id),
+      title: d.title,
+      items: Array.isArray(d.items) ? d.items.map((i: any) => i.label).filter(Boolean) : [],
+    }));
+  } catch (err) {
+    console.error("[cms] getCateringMenu fell back to static data:", err);
+    return CATERING_MENU_FALLBACK;
+  }
+});
+
+export const getCateringFaq = cache(async (): Promise<CateringFaqItem[]> => {
+  try {
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
+      collection: "catering-faq",
+      limit: 50,
+      sort: "order",
+      where: { visible: { equals: true } },
+    });
+    if (!docs.length) return CATERING_FAQ_FALLBACK;
+    return docs.map((d: any) => ({ id: String(d.id), q: d.question, a: d.answer }));
+  } catch (err) {
+    console.error("[cms] getCateringFaq fell back to static data:", err);
+    return CATERING_FAQ_FALLBACK;
+  }
+});

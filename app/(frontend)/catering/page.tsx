@@ -8,51 +8,25 @@ import { Art } from "@/components/ui/art";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { BreadDecor } from "@/components/ui/bread-decor";
 import { Accordion } from "@/components/ui/accordion";
-import { getSiteData } from "@/lib/cms";
+import {
+  getSiteData,
+  getCateringPackages,
+  getCateringMenu,
+  getCateringFaq,
+} from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "จัดเบรก",
   description: "บริการจัดเบรกครบวงจร เบเกอรี่ + เครื่องดื่ม สำหรับงานสัมมนา ประชุม เลี้ยงบริษัท ส่งขอนแก่นและทั่วประเทศ",
 };
 
-const PACKAGES = [
-  {
-    name: "แพ็กเกจเริ่มต้น",
-    price: "89",
-    items: ["เบเกอรี่ 2 ชิ้น/ท่าน", "เครื่องดื่ม 1 แก้ว", "จัดเซ็ตพร้อมเสิร์ฟ"],
-  },
-  {
-    name: "แพ็กเกจมาตรฐาน",
-    price: "139",
-    featured: true,
-    items: ["เบเกอรี่ 3 ชิ้น/ท่าน", "เครื่องดื่ม 1 แก้ว", "ของว่าง 1 อย่าง", "อุปกรณ์ครบชุด"],
-  },
-  {
-    name: "แพ็กเกจพรีเมียม",
-    price: "199",
-    items: ["เบเกอรี่พรีเมียม 4 ชิ้น/ท่าน", "เครื่องดื่ม 2 แก้ว", "ของว่าง 2 อย่าง", "จัด Table Setting"],
-  },
-];
-
-const MENU_GROUPS = [
-  {
-    title: "เบเกอรี่",
-    items: ["ครัวซองต์", "ขนมปัง", "เค้ก", "คัพเค้ก", "คุกกี้", "โดนัท"],
-  },
-  {
-    title: "เครื่องดื่ม",
-    items: ["กาแฟ", "ชา / มัทฉะ", "โกโก้", "น้ำผลไม้", "สมูทตี้", "น้ำเปล่า / โซดา"],
-  },
-];
-
-const CONDITIONS = [
-  { q: "ขั้นต่ำในการสั่ง", a: "รับจัดเบรกขั้นต่ำ 20 ท่านขึ้นไป สำหรับงานเล็กสามารถสอบถามเพิ่มเติมได้" },
-  { q: "จองล่วงหน้ากี่วัน", a: "แนะนำจองล่วงหน้าอย่างน้อย 2-3 วัน สำหรับงานใหญ่หรือเมนูพิเศษ 5-7 วัน" },
-  { q: "พื้นที่จัดส่ง", a: "ขอนแก่นส่งถึงงานทุกวัน ต่างจังหวัดจัดส่งได้ทั่วประเทศ (มีค่าจัดส่งตามระยะทาง)" },
-];
-
 export default async function CateringPage() {
-  const { lineUrl: LINE_URL } = await getSiteData();
+  const [{ lineUrl: LINE_URL }, PACKAGES, MENU_GROUPS, CONDITIONS] = await Promise.all([
+    getSiteData(),
+    getCateringPackages(),
+    getCateringMenu(),
+    getCateringFaq(),
+  ]);
   return (
     <>
       <PageHero

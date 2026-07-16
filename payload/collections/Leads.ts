@@ -13,7 +13,7 @@ export const Leads: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "source", "status", "createdAt"],
-    group: "ลูกค้า",
+    group: "ขายและลูกค้า",
   },
   labels: {
     singular: "ลูกค้าที่ติดต่อเข้ามา",

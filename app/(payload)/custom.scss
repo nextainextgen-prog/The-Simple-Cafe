@@ -1,0 +1,164 @@
+// ธีมหลังบ้านให้เข้ากับหน้าเว็บ (CI: โอลีฟ-ครีม-ทอง)
+//
+// Payload ประกอบสีทั้งแผงจาก ramp --color-base-0..1000 แล้วให้ --theme-elevation-*
+// map ต่ออีกที (ดู node_modules/@payloadcms/ui/dist/scss/colors.scss)
+// เราจึงทาสีที่ ramp ที่เดียว ทั้งแผงก็อุ่นตามหมด ไม่ต้องไล่ override ทีละ component
+//
+// ramp นี้ไล่จากครีม (0 = พื้น) ไปโอลีฟเข้ม (800 = ตัวอักษร) โดยคุมให้สว่างลดหลั่น
+// สม่ำเสมอ ส่วนสีแบรนด์จริง (ปุ่ม/ลิงก์/โฟกัส) ตั้งแยกด้านล่าง ไม่ยัดลง ramp
+// เพราะ ramp ต้องเป็นกลางเพื่อให้ contrast ของ Payload คำนวณถูก
+//
+// หมายเหตุ: ธีมนี้คุมเฉพาะ "ตัวแผง" — หน้า Login มีเจ้าของแยก อย่าสไตล์ .login ที่นี่
+
+@layer payload {
+  :root {
+    // ---- ramp อุ่น: ครีม -> โอลีฟเข้ม ----
+    --color-base-0: #fffae3; // ครีม (Magnolia) — พื้นแผง
+    --color-base-50: #fbf5da;
+    --color-base-100: #f4eecf;
+    --color-base-150: #ece4c2;
+    --color-base-200: #e4d4a6; // เส้น/ขอบอุ่น (line)
+    --color-base-250: #d6c69a;
+    --color-base-300: #c5b78d;
+    --color-base-350: #b3a67f;
+    --color-base-400: #a19471;
+    --color-base-450: #8e8264;
+    --color-base-500: #7c7157;
+    --color-base-550: #6d654e;
+    --color-base-600: #5f5946;
+    --color-base-650: #524d3e;
+    --color-base-700: #464235;
+    --color-base-750: #3a382d;
+    --color-base-800: #2e3f26; // ink — ตัวอักษรหลัก
+    --color-base-850: #283621;
+    --color-base-900: #212c1b;
+    --color-base-950: #1a2215;
+    --color-base-1000: #121810;
+
+    // การ์ด/ช่องกรอกให้ขาวครีมกว่าพื้น (หน้าเว็บก็เล่นแบบนี้ — surface สว่างกว่า cream)
+    --theme-input-bg: #fffcf0;
+
+    // ---- ตัวอักษร ----
+    // Noto Sans Thai โหลดผ่าน next/font ที่ (payload)/layout.tsx
+    --font-body: var(--font-noto-thai), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    // ---- มุมโค้ง: ของเดิม 3/4/8px เหลี่ยมไป ----
+    --style-radius-s: 8px;
+    --style-radius-m: 12px;
+    --style-radius-l: 20px;
+
+    // โฟกัสใช้โอลีฟแทนดำ
+    --accessibility-outline: 2px solid #737c49;
+
+    --theme-overlay: rgba(46, 63, 38, 0.45);
+  }
+
+  // success ให้เป็นโอลีฟแทนฟ้า (ฟ้าหลุดจาก CI)
+  :root {
+    --color-success-50: #f1f4e6;
+    --color-success-100: #e3ebcd;
+    --color-success-500: #737c49;
+    --color-success-600: #646c40;
+    --color-success-750: #44553c;
+    --color-success-800: #3a4a33;
+  }
+}
+
+@layer payload {
+  // ---- เมนูข้าง ----
+  .nav {
+    background: #fffcf0;
+    border-right: 1px solid var(--theme-elevation-200);
+  }
+
+  // หัวข้อกลุ่ม (ระบบ / สินค้า / เนื้อหา ...) — ของเดิมจางจนอ่านไม่ออก
+  .nav-group__toggle {
+    color: var(--theme-elevation-650);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nav__link {
+    border-radius: 10px;
+    padding-block: 0.4rem;
+    padding-inline: 0.6rem;
+    transition: background 120ms ease, color 120ms ease;
+
+    &:hover {
+      background: var(--theme-elevation-100);
+      color: var(--theme-elevation-900);
+    }
+  }
+
+  // หน้าที่เปิดอยู่ให้เห็นชัด — Payload ไม่ใส่คลาส --active แต่ยัด div.nav__link-indicator
+  // เข้าไปในลิงก์ที่ active แทน เลยต้องจับด้วย :has() (เช็คจาก DOM จริง ไม่ใช่เดา)
+  .nav__link:has(.nav__link-indicator) {
+    background: var(--theme-elevation-150);
+    color: var(--theme-elevation-900);
+    font-weight: 600;
+
+    &:hover {
+      background: var(--theme-elevation-200);
+    }
+  }
+
+  // แถบ indicator ให้เป็นโอลีฟแบรนด์ แทนที่จะเป็นสีตัวอักษร
+  .nav__link-indicator {
+    background: #737c49;
+  }
+
+  // ---- ปุ่ม ----
+  .btn--style-primary .btn__content {
+    border-radius: 999px;
+  }
+
+  .btn--style-primary {
+    --color: #fffae3;
+    background-color: #44553c;
+    border-radius: 999px;
+
+    &:hover {
+      background-color: #2e3f26;
+    }
+  }
+
+  .btn--style-secondary {
+    border-radius: 999px;
+  }
+
+  // ---- ตาราง/การ์ด ----
+  .table {
+    border: 1px solid var(--theme-elevation-200);
+    border-radius: var(--style-radius-l);
+    overflow: hidden;
+  }
+
+  .table thead {
+    background: var(--theme-elevation-50);
+  }
+
+  .table th {
+    font-weight: 600;
+  }
+
+  .table tbody tr:hover {
+    background: var(--theme-elevation-50);
+  }
+
+  // ช่องกรอก/ค้นหา
+  .field-type input,
+  .field-type textarea,
+  .field-type .rs__control,
+  .search-filter input {
+    border-radius: var(--style-radius-m);
+  }
+
+  // เงานุ่มมาก ๆ แทนเงาหนัก (กฎ CI: ใช้เส้นขอบอุ่นแทนเงา)
+  .popup__content,
+  .doc-controls__popup {
+    border-radius: var(--style-radius-l);
+    box-shadow: 0 1px 3px rgba(46, 63, 38, 0.06);
+  }
+}

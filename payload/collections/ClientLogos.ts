@@ -7,7 +7,7 @@ export const ClientLogos: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "visible", "order"],
-    group: "รีวิว",
+    group: "เนื้อหาเว็บ",
   },
   labels: {
     singular: "โลโก้ลูกค้า",

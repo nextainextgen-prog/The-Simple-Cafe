@@ -7,7 +7,7 @@ export const WhatWeDo: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "visible", "order"],
-    group: "เนื้อหา",
+    group: "เนื้อหาเว็บ",
   },
   labels: {
     singular: "สิ่งที่เราทำ",

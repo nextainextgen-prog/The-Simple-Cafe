@@ -7,7 +7,7 @@ export const SocialProof: GlobalConfig = {
   slug: "social-proof",
   label: "คะแนนรวม (Google)",
   admin: {
-    group: "รีวิว",
+    group: "เนื้อหาเว็บ",
   },
   fields: [
     {

@@ -4,8 +4,8 @@ import config from "@payload-config";
 import { fetchGoogleReviews } from "@/lib/google-reviews";
 
 // Cron: ดึงรีวิว Google แล้ว cache ลง DB — ตั้งเวลาใน vercel.json (วันละครั้ง)
-// ป้องกันด้วย CRON_SECRET: Vercel Cron ส่ง header Authorization: Bearer <CRON_SECRET>
-// เรียกเองด้วยมือก็ได้: /api/cron/sync-reviews?secret=<CRON_SECRET>
+// ป้องกันด้วย CRON_SECRET (Vercel Cron ส่ง header Authorization: Bearer <CRON_SECRET>)
+// รับ secret ทาง header เท่านั้น — ไม่รับผ่าน query string (กัน secret หลุดเข้า log)
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
@@ -13,24 +13,33 @@ export const maxDuration = 60;
 
 function authorized(req: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;
-  // ยังไม่ตั้ง secret = อนุญาต (dev) แต่จะเตือนใน log
-  if (!secret) return true;
+  // fail-closed: ยังไม่ตั้ง secret = ปฏิเสธ (กัน endpoint เปิดสาธารณะตอน deploy รอบแรก)
+  if (!secret) return false;
   const header = req.headers.get("authorization") || "";
   const bearer = header.replace(/^Bearer\s+/i, "");
-  const query = req.nextUrl.searchParams.get("secret") || "";
-  return bearer === secret || query === secret;
+  return bearer === secret;
 }
 
 export async function GET(req: NextRequest) {
   if (!authorized(req)) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
-  if (!process.env.CRON_SECRET) {
-    console.warn("[cron] CRON_SECRET ยังไม่ได้ตั้ง — endpoint เปิดสาธารณะชั่วคราว");
-  }
 
   try {
     const data = await fetchGoogleReviews();
+
+    // Google ยังไม่ได้ตั้งค่า → fetchGoogleReviews คืน mock — อย่าเขียน mock ลง DB เป็นรีวิว "google" จริง
+    if (data.mocked) {
+      return NextResponse.json({
+        ok: true,
+        mocked: true,
+        skipped: "google-not-configured",
+        synced: 0,
+        created: 0,
+        updated: 0,
+      });
+    }
+
     const payload = await getPayload({ config });
 
     let created = 0;

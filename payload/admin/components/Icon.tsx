@@ -3,7 +3,7 @@ import React from "react";
 /**
  * ไอคอนเล็กบน nav หลังบ้าน — Simple Cafe
  * มาร์ก "S" (Simple) เส้นล้วน โทนโอลีฟ CI บนพื้น surface ขอบอุ่น
- * ไม่มีอีโมจิ · ห้าม indigo/น้ำเงินของ EasySpace
+ * ไม่มีอีโมจิ · ห้าม indigo/น้ำเงิน (หลุดจาก CI ร้าน)
  */
 export const Icon: React.FC = () => (
   <svg

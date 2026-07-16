@@ -7,7 +7,7 @@ import React from "react";
  *
  * self-contained: ฝังฟอนต์ + สไตล์ในตัวเอง เพราะ admin layout ไม่ได้โหลด Cormorant/Caveat ให้
  * (โหลดผ่าน next/font เฉพาะฝั่ง frontend) และห้ามแตะ app/(payload)/layout.tsx
- * สีใช้ CI Simple Cafe ล้วน — ห้าม indigo/น้ำเงินของ EasySpace
+ * สีใช้ CI Simple Cafe ล้วน — ห้าม indigo/น้ำเงิน (หลุดจาก CI ร้าน)
  */
 
 const CI = {

@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CartProvider } from "@/components/cart/cart-context";
 import { FloatingCart } from "@/components/cart/floating-cart";
+import { LivePreviewRefresh } from "@/components/live-preview-refresh";
 import { getSiteData } from "@/lib/cms";
 import { SITE_URL } from "@/lib/seo";
 
@@ -87,6 +88,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(businessLd) }}
         />
+        <LivePreviewRefresh />
         <CartProvider>
           <SiteHeader nav={site.nav} lineUrl={site.lineUrl} />
           <main className="flex-1">{children}</main>

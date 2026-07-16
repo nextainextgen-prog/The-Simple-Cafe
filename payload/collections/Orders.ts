@@ -7,7 +7,7 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: "orderNumber",
     defaultColumns: ["orderNumber", "customerName", "total", "status", "createdAt"],
-    group: "ออเดอร์",
+    group: "ขายและลูกค้า",
   },
   labels: {
     singular: "ออเดอร์",

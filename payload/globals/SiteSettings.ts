@@ -5,7 +5,7 @@ export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "ตั้งค่าเว็บไซต์",
   admin: {
-    group: "เนื้อหา",
+    group: "ตั้งค่า",
   },
   fields: [
     {

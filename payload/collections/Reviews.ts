@@ -7,7 +7,7 @@ export const Reviews: CollectionConfig = {
   admin: {
     useAsTitle: "authorName",
     defaultColumns: ["authorName", "rating", "source", "visible", "order"],
-    group: "รีวิว",
+    group: "เนื้อหาเว็บ",
   },
   labels: {
     singular: "รีวิว",

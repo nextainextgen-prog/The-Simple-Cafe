@@ -21,9 +21,10 @@ import { StrikethroughFeatureClient as StrikethroughFeatureClient_e70f5e05f09f93
 import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
-import { Logo as Logo_c38dcaeb732a8d4bc23b37b1f9ede59a } from '@/payload/admin/components/Logo.tsx'
 import { Icon as Icon_fc99874d7af44d33b9deaa954f635d42 } from '@/payload/admin/components/Icon.tsx'
+import { Logo as Logo_c38dcaeb732a8d4bc23b37b1f9ede59a } from '@/payload/admin/components/Logo.tsx'
+import { LoginTheme as LoginTheme_d56679f43f0fd9046d370d5f4442a740 } from '@/payload/admin/components/LoginTheme.tsx'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
 export const importMap = {
@@ -50,7 +51,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#UnderlineFeatureClient": UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
-  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@/payload/admin/components/Icon.tsx#Icon": Icon_fc99874d7af44d33b9deaa954f635d42,
   "@/payload/admin/components/Logo.tsx#Logo": Logo_c38dcaeb732a8d4bc23b37b1f9ede59a,
-  "@/payload/admin/components/Icon.tsx#Icon": Icon_fc99874d7af44d33b9deaa954f635d42
+  "@/payload/admin/components/LoginTheme.tsx#LoginTheme": LoginTheme_d56679f43f0fd9046d370d5f4442a740,
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

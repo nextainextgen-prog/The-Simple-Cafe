@@ -78,6 +78,8 @@ export default buildConfig({
         Logo: "@/payload/admin/components/Logo.tsx#Logo",
         Icon: "@/payload/admin/components/Icon.tsx#Icon",
       },
+      // ธีมหน้า login (การ์ด frosted glass, ปุ่มโอลีฟ ฯลฯ) — ฉีด CSS เฉพาะหน้า login
+      beforeLogin: ["@/payload/admin/components/LoginTheme.tsx#LoginTheme"],
     },
     meta: {
       titleSuffix: "· Simple Cafe หลังบ้าน",

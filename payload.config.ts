@@ -94,6 +94,11 @@ export default buildConfig({
         dashboard: {
           Component: "@/payload/admin/components/views/Dashboard.tsx#Dashboard",
         },
+        // หน้า hub ตั้งค่าแบบการ์ด (/admin/settings) — เรนเดอร์ DefaultTemplate เองในคอมโพเนนต์
+        settings: {
+          path: "/settings",
+          Component: "@/payload/admin/components/views/SettingsHub.tsx#SettingsHub",
+        },
       },
     },
     meta: {

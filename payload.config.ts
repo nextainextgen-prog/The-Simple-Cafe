@@ -89,6 +89,12 @@ export default buildConfig({
       // เมนูหลังบ้าน (hybrid ไม่แทน Nav): โลโก้+ธีม nav บนสุด, การ์ดผู้ใช้ล่างสุด
       beforeNavLinks: ["@/payload/admin/components/NavBrand.tsx#NavBrand"],
       afterNavLinks: ["@/payload/admin/components/NavUserCard.tsx#NavUserCard"],
+      // หน้าแรกหลังบ้าน = KPI dashboard (แทน dashboard default ของ Payload)
+      views: {
+        dashboard: {
+          Component: "@/payload/admin/components/views/Dashboard.tsx#Dashboard",
+        },
+      },
     },
     meta: {
       titleSuffix: "· Simple Cafe หลังบ้าน",

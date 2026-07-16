@@ -87,6 +87,18 @@ export default buildConfig({
         { rel: "icon", type: "image/svg+xml", url: "/favicon-simple-admin.svg" },
       ],
     },
+    // แก้เนื้อหาแล้วเห็นหน้าเว็บจริงเปลี่ยนสดข้างๆ — เปิดกับเนื้อหาหน้าเว็บ
+    // หน้าเว็บฝัง <RefreshRouteOnSave/> ไว้ พอ save จะ router.refresh() ดึงข้อมูลใหม่
+    livePreview: {
+      url: process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3002",
+      globals: ["site-settings"],
+      collections: ["what-we-do", "products"],
+      breakpoints: [
+        { label: "มือถือ", name: "mobile", width: 390, height: 844 },
+        { label: "แท็บเล็ต", name: "tablet", width: 768, height: 1024 },
+        { label: "จอใหญ่", name: "desktop", width: 1440, height: 900 },
+      ],
+    },
   },
   // Leads ผ่าน withRevalidate ได้ปลอดภัย — "leads" ไม่อยู่ใน CONTENT_SLUGS จึงไม่ติด hook
   // (lead ไม่ได้ขึ้นหน้าเว็บ ไม่ต้อง revalidate ทั้งเว็บทุกครั้งที่ลูกค้าส่งฟอร์ม)

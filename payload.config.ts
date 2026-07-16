@@ -86,6 +86,9 @@ export default buildConfig({
       },
       // ธีมหน้า login (การ์ด frosted glass, ปุ่มโอลีฟ ฯลฯ) — ฉีด CSS เฉพาะหน้า login
       beforeLogin: ["@/payload/admin/components/LoginTheme.tsx#LoginTheme"],
+      // เมนูหลังบ้าน (hybrid ไม่แทน Nav): โลโก้+ธีม nav บนสุด, การ์ดผู้ใช้ล่างสุด
+      beforeNavLinks: ["@/payload/admin/components/NavBrand.tsx#NavBrand"],
+      afterNavLinks: ["@/payload/admin/components/NavUserCard.tsx#NavUserCard"],
     },
     meta: {
       titleSuffix: "· Simple Cafe หลังบ้าน",

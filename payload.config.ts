@@ -72,8 +72,18 @@ const storagePlugins: Plugin[] = process.env.BLOB_READ_WRITE_TOKEN
 export default buildConfig({
   admin: {
     user: Users.slug,
+    // โลโก้/ไอคอนแบรนด์หน้า login + nav (ต้องรัน `payload generate:importmap` หลังแก้)
+    components: {
+      graphics: {
+        Logo: "@/payload/admin/components/Logo.tsx#Logo",
+        Icon: "@/payload/admin/components/Icon.tsx#Icon",
+      },
+    },
     meta: {
       titleSuffix: "· Simple Cafe หลังบ้าน",
+      icons: [
+        { rel: "icon", type: "image/svg+xml", url: "/favicon-simple-admin.svg" },
+      ],
     },
   },
   // Leads ผ่าน withRevalidate ได้ปลอดภัย — "leads" ไม่อยู่ใน CONTENT_SLUGS จึงไม่ติด hook
